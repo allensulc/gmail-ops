@@ -1,0 +1,19 @@
+﻿# Secrets / local auth
+client_secret.json
+*.json
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Local artifacts
+*.log
