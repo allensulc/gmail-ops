@@ -18,7 +18,11 @@ def _startup():
 @app.get("/health")
 def health():
     return {"ok": True}
-
+    
+@app.get("/")
+def root():
+    return {"ok": True}
+    
 @app.post("/gmail/push")
 async def gmail_push(request: Request, secret: str):
     # Simple shared-secret check to prevent random internet hits
