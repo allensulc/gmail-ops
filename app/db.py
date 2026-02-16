@@ -2,10 +2,18 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 from .config import DATABASE_URL
 
-engine: Engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+def _normalize_db_url(url: str) -> str:
+    # Railway often gives postgres:// or postgresql://
+    # We want SQLAlchemy psycopg3 driver explicitly.
+    if url.startswith("postgres://"):
+        url = "postgresql://" + url[len("postgres://"):]
+    if url.startswith("postgresql://") and "postgresql+psycopg://" not in url:
+        url = url.replace("postgresql://", "postgresql+psycopg://", 1)
+    return url
+
+engine: Engine = create_engine(_normalize_db_url(DATABASE_URL), pool_pre_ping=True)
 
 def init_db() -> None:
-    # Minimal table for v1: track processed messages to avoid duplicates
     with engine.begin() as conn:
         conn.execute(text("""
         CREATE TABLE IF NOT EXISTS processed_messages (
